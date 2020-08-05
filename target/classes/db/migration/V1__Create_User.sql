@@ -1,3 +1,4 @@
+use xdml;
 create table user
 (
     id                 bigint primary key auto_increment,
