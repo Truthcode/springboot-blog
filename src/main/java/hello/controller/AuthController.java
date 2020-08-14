@@ -1,5 +1,6 @@
 package hello.controller;
 
+import hello.entity.LoginResult;
 import hello.entity.Result;
 import hello.entity.User;
 import hello.service.UserService;
@@ -39,9 +40,9 @@ public class AuthController {
         User loggerInUser = userService.getUserByUsername(authentication == null ? null : authentication.getName());
 
         if (loggerInUser == null) {
-            return Result.success("用户没有登录");
+            return LoginResult.success("用户没有登录");
         } else {
-            return Result.success("登陆成功",loggerInUser);
+            return LoginResult.success("登陆成功",loggerInUser);
         }
     }
 
@@ -52,41 +53,41 @@ public class AuthController {
         User loggerInUser = userService.getUserByUsername(userName);
 
         if (loggerInUser == null) {
-            return Result.success("用户没有登录");
+            return LoginResult.success("用户没有登录");
 
         } else {
             SecurityContextHolder.clearContext();
-            return Result.success("注销成功");
+            return LoginResult.success("注销成功");
         }
     }
 
     @PostMapping("/auth/register")
     @ResponseBody
-    public Result register(@RequestBody Map<String, String> usernameAndPassword) {
+    public LoginResult register(@RequestBody Map<String, String> usernameAndPassword) {
         String username = usernameAndPassword.get("username");
         String password = usernameAndPassword.get("password");
         if (username == null || password == null) {
-            return Result.failure("username/password == null");
+            return LoginResult.failure("username/password == null");
         }
         if (username.length() > 15 || username.length() < 1) {
-            return Result.failure("invalid username");
+            return LoginResult.failure("invalid username");
         }
         if (password.length() > 16 || password.length() < 6) {
-            return Result.failure("invalid password");
+            return LoginResult.failure("invalid password");
         }
         try {
             userService.save(username, password);
         } catch (DuplicateKeyException e) {
             e.printStackTrace();
-            return Result.failure("user already exists");
+            return LoginResult.failure("user already exists");
         }
-        return Result.success("success!");
+        return LoginResult.success("success!");
     }
 
 
     @PostMapping("/auth/login")
     @ResponseBody
-    public Result login(@RequestBody Map<String, String> usernameAndPassword) {
+    public LoginResult login(@RequestBody Map<String, String> usernameAndPassword) {
         String username = usernameAndPassword.get("username");
         String password = usernameAndPassword.get("password");
 
@@ -94,7 +95,7 @@ public class AuthController {
         try {
             userDetails = userService.loadUserByUsername(username);
         } catch (UsernameNotFoundException e) {
-            return Result.failure("用户不存在");
+            return LoginResult.failure("用户不存在");
         }
 
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
@@ -103,10 +104,10 @@ public class AuthController {
             authenticationManager.authenticate(token);
             SecurityContextHolder.getContext().setAuthentication(token);
 
-            return Result.success("登陆成功", userService.getUserByUsername(username));
+            return LoginResult.success("登陆成功", userService.getUserByUsername(username));
 
         } catch (BadCredentialsException e) {
-            return Result.failure("密码不正确");
+            return LoginResult.failure("密码不正确");
         }
     }
 }
