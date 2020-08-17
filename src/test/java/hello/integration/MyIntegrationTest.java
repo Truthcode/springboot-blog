@@ -20,7 +20,6 @@ import java.net.http.HttpResponse;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:test.properties")
-
 public class MyIntegrationTest {
     @Inject
     Environment environment;

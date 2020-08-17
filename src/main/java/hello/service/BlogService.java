@@ -2,6 +2,7 @@ package hello.service;
 
 import hello.dao.BlogDao;
 import hello.entity.Blog;
+import hello.entity.BlogListResult;
 import hello.entity.BlogResult;
 import hello.entity.Result;
 import org.springframework.stereotype.Service;
@@ -30,10 +31,34 @@ public class BlogService {
             int pageCount = count % pageSize == 0 ? count / pageSize : count / pageSize + 1;
 
 
-            return BlogResult.newResults(blogs, count, page, pageCount);
+            return BlogListResult.newResults(blogs, count, page, pageCount);
         } catch (Exception e) {
             e.printStackTrace();
-            return BlogResult.failure("系统异常");
+            return BlogListResult.failure("系统异常");
+        }
+    }
+
+    public BlogResult getBlogById(Integer id) {
+        try {
+            return BlogResult.success("获取成功", blogDao.selectBlogById(id));
+        } catch (Exception e) {
+            return BlogResult.failure(e);
+        }
+    }
+
+    public BlogResult insertBlog(Blog newBlog) {
+        try {
+            return BlogResult.success("创建成功", blogDao.insertBlog(newBlog));
+        } catch (Exception e) {
+            return BlogResult.failure(e);
+        }
+    }
+
+    public BlogResult updateBlog(Integer blogId, Blog newBlog) {
+        try {
+            return BlogResult.success("修改成功", blogDao.updateBlog(newBlog));
+        } catch (Exception e) {
+            return BlogResult.failure(e);
         }
     }
 }

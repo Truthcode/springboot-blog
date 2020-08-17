@@ -13,6 +13,7 @@ import java.util.Map;
 public class BlogDao {
     private final SqlSession sqlSession;
 
+
     @Inject
     public BlogDao(SqlSession sqlSession) {
         this.sqlSession = sqlSession;
@@ -23,10 +24,24 @@ public class BlogDao {
         parameters.put("user_id", userId);
         parameters.put("offset", (page - 1) * pageSize);
         parameters.put("limit", pageSize);
-        return sqlSession.selectList("selectBlog",parameters);
+        return sqlSession.selectList("selectBlog", parameters);
     }
 
     public int count(Integer userId) {
-        return sqlSession.selectOne("countBlog",userId);
+        return sqlSession.selectOne("countBlog", userId);
+    }
+
+    public Blog selectBlogById(Integer id) {
+        return sqlSession.selectOne("selectBlogById", id);
+    }
+
+    public Blog insertBlog(Blog newBlog) {
+        sqlSession.insert("insertBlog", newBlog);
+        return selectBlogById(newBlog.getId());
+    }
+
+    public Blog updateBlog(Blog newBlog){
+        sqlSession.update("update",newBlog);
+        return selectBlogById(newBlog.getId());
     }
 }

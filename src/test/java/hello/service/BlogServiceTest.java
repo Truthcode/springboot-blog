@@ -25,7 +25,6 @@ public class BlogServiceTest {
     public void getBlogsFromDb() {
         blogService.getBlogs(1, 10, null);
         Mockito.verify(blogDao).getBlogs(1, 10, null);
-
     }
 
     @Test
